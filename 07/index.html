@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduTutor AI - 智慧家教與錯題診斷學習系統</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 antialiased flex flex-col">
+
+  <!-- Top Glassmorphism Navigation Bar -->
+  <header class="glass-header sticky top-0 z-50 px-4 lg:px-8 py-3.5 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <!-- Brand & Student Badge -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+          <i class="fa-solid fa-graduation-cap text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-lg font-bold text-slate-900 tracking-tight">EduTutor AI</h1>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-700">智慧家教系統 v2.4</span>
+          </div>
+          <p class="text-xs text-slate-500">專屬 1 對 1 學習診斷與自適應補強教學平台</p>
+        </div>
+      </div>
+
+      <!-- Student Profile Card in Header -->
+      <div class="flex items-center space-x-3 bg-white border border-slate-200 rounded-xl p-1.5 pr-4 shadow-sm">
+        <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
+          資處
+        </div>
+        <div class="text-left text-xs">
+          <div class="font-semibold text-slate-800 flex items-center gap-1.5">
+            <span>黃芊瑜</span>
+            <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">資處科 一年仁班 #07</span>
+          </div>
+          <div class="text-slate-500 text-[11px] flex items-center gap-1 mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+            <span>數位科技概論（第3回）得分：<b class="text-indigo-600 font-bold">68分</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="switchTab('report')" class="px-3.5 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-file-invoice text-indigo-600"></i>
+          <span>家教處方簽</span>
+        </button>
+        <button onclick="window.print()" class="px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-sm shadow-indigo-200 flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i>
+          <span>列印報表</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tab Bar -->
+  <nav class="bg-white border-b border-slate-200 sticky top-[65px] z-40 px-4 lg:px-8">
+    <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 overflow-x-auto py-2" id="navTabs">
+      <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="nav-tab-btn active px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 text-indigo-600 bg-indigo-50 border border-indigo-100">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>學習戰情室</span>
+      </button>
+      <button onclick="switchTab('review')" id="tab-btn-review" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition flex items-center gap-2">
+        <i class="fa-solid fa-book-open"></i>
+        <span>隨堂試卷錯題本</span>
+        <span class="ml-1 px-1.5 py-0.5 text-xs bg-rose-100 text-rose-700 rounded-full font-bold">4 錯題</span>
+      </button>
+      <button onclick="switchTab('aitutor')" id="tab-btn-aitutor" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition flex items-center gap-2">
+        <i class="fa-solid fa-robot text-purple-600"></i>
+        <span>1對1 AI 家教引導室</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+      </button>
+      <button onclick="switchTab('practice')" id="tab-btn-practice" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square text-sky-600"></i>
+        <span>自適應弱點測驗</span>
+        <span class="ml-1 px-1.5 py-0.5 text-xs bg-sky-100 text-sky-700 rounded-full font-bold">5 題</span>
+      </button>
+      <button onclick="switchTab('report')" id="tab-btn-report" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition flex items-center gap-2">
+        <i class="fa-solid fa-clipboard-check text-emerald-600"></i>
+        <span>家教日誌與處方簽</span>
+      </button>
+      <button onclick="switchTab('manager')" id="tab-btn-manager" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition flex items-center gap-2">
+        <i class="fa-solid fa-folder-plus text-amber-600"></i>
+        <span>考卷管理</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Workspace Container -->
+  <main class="flex-1 max-w-7xl mx-auto w-full p-4 lg:p-8 space-y-6">
+
+    <!-- ==================== TAB 1: 學習戰情室 (Dashboard) ==================== -->
+    <section id="tab-dashboard" class="tab-content space-y-6">
+      
+      <!-- Exam Banner Card -->
+      <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
+          <i class="fa-solid fa-microchip"></i>
+        </div>
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <div class="md:col-span-2 space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/30 border border-indigo-400/30 rounded-full text-xs font-medium text-indigo-200">
+              <i class="fa-solid fa-file-lines"></i>
+              <span>旗立資訊版 • 數位科技概論（上）第 3 回</span>
+            </div>
+            <h2 class="text-2xl lg:text-3xl font-extrabold tracking-tight">
+              單元診斷：系統平台的組成架構－硬體
+            </h2>
+            <p class="text-indigo-200 text-sm leading-relaxed max-w-2xl">
+              學生 <b class="text-white underline decoration-indigo-400">黃芊瑜</b>（資處科一年仁班 07號）本次測驗得分 
+              <span class="text-amber-400 font-black text-xl">68 分</span>（每題 4 分，扣 32 分，全卷約錯 8 題，第 1 面偵測 4 處失分）。
+              系統已自動鎖定四技二專統測高頻題型：「熱插拔陷阱」、「主機板插槽規格」、「MIPS指標」與「SRAM/DRAM記憶體架構」進行針對性家教突破。
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button onclick="switchTab('review')" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium text-xs rounded-xl shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass"></i> 查看第 1 面 4 大錯題詳解
+              </button>
+              <button onclick="switchTab('aitutor')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium text-xs rounded-xl border border-white/20 transition flex items-center gap-2">
+                <i class="fa-solid fa-robot"></i> 啟動 AI 家教引導輔導
+              </button>
+            </div>
+          </div>
+          <!-- Score Stats Grid -->
+          <div class="bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/10 grid grid-cols-2 gap-4 text-center">
+            <div>
+              <div class="text-xs text-indigo-200 font-medium">本次實得分數</div>
+              <div class="text-4xl font-black text-amber-400 mt-1">68<span class="text-sm font-normal text-white">/100</span></div>
+              <div class="text-[11px] text-rose-300 mt-0.5 font-medium">-32 總失分</div>
+            </div>
+            <div>
+              <div class="text-xs text-indigo-200 font-medium">答對率 (面一)</div>
+              <div class="text-4xl font-black text-emerald-400 mt-1">69.2<span class="text-sm font-normal text-white">%</span></div>
+              <div class="text-[11px] text-slate-300 mt-0.5">9 題正確 / 13 題</div>
+            </div>
+            <div class="border-t border-white/10 pt-3">
+              <div class="text-xs text-indigo-200 font-medium">班級預估平均</div>
+              <div class="text-xl font-bold text-white mt-0.5">74.5 分</div>
+            </div>
+            <div class="border-t border-white/10 pt-3">
+              <div class="text-xs text-indigo-200 font-medium">學習掌握等級</div>
+              <div class="text-xl font-bold text-amber-300 mt-0.5">B+（待強化）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Grid: Competency Radar & Diagnostic Insights -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Knowledge Mastery Competency Bars -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5 lg:col-span-1">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+              <i class="fa-solid fa-chart-radar text-indigo-600"></i>
+              <span>知識點掌握度診斷</span>
+            </h3>
+            <span class="text-xs text-slate-400 font-medium">單元三：硬體架構</span>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <!-- 1. 電腦五大架構 -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">電腦五大架構 (CU/ALU/MU/I/O)</span>
+                <span class="text-emerald-600 font-bold">88% (熟練)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full rounded-full" style="width: 88%"></div>
+              </div>
+              <p class="text-[11px] text-slate-400">Q2, Q3, Q4, Q5, Q9, Q11 全對，宏觀角色概念清楚</p>
+            </div>
+
+            <!-- 2. 記憶體儲存階層 -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">記憶體儲存階層 (SRAM/DRAM/快取)</span>
+                <span class="text-amber-600 font-bold">60% (需加強)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-amber-500 h-full rounded-full" style="width: 60%"></div>
+              </div>
+              <p class="text-[11px] text-slate-400">Q1 速度與充電刷新特徵混淆，需建立對照表</p>
+            </div>
+
+            <!-- 3. 周邊介面與熱插拔 -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">周邊介面與熱插拔運作條件</span>
+                <span class="text-rose-600 font-bold">50% (薄弱盲點)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-rose-500 h-full rounded-full" style="width: 50%"></div>
+              </div>
+              <p class="text-[11px] text-slate-400">Q7 掉入「只能在開機時插拔」互斥邏輯陷阱</p>
+            </div>
+
+            <!-- 4. 硬體組裝與擴充插槽 -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">硬體組裝與擴充插槽 (DIMM/PCI-E)</span>
+                <span class="text-rose-600 font-bold">45% (薄弱盲點)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-rose-500 h-full rounded-full" style="width: 45%"></div>
+              </div>
+              <p class="text-[11px] text-slate-400">Q8 把 RAM 插槽誤選為 PCI-E 顯卡插槽</p>
+            </div>
+
+            <!-- 5. CPU與運算指標 -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">CPU指標與專有名詞 (MIPS/GHz)</span>
+                <span class="text-rose-600 font-bold">42% (薄弱盲點)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-rose-500 h-full rounded-full" style="width: 42%"></div>
+              </div>
+              <p class="text-[11px] text-slate-400">Q10 將 MIPS 的 Instruction 誤猜為 Information</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tutor Comprehensive Diagnostics & Learning Prescription -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-stethoscope"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-800 text-base">家教專家深度診斷與處方報告</h3>
+                <p class="text-xs text-slate-500">針對 資料處理科 黃芊瑜 的思考模式與統測作答盲點剖析</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">
+              <i class="fa-solid fa-check-circle mr-1"></i>診斷完成
+            </span>
+          </div>
+
+          <!-- Diagnostic Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center gap-2 text-indigo-700 font-bold">
+                <i class="fa-solid fa-thumbs-up"></i>
+                <span>強項優勢 (Strong Points)</span>
+              </div>
+              <p class="text-slate-600 leading-relaxed">
+                • <b>宏觀電腦運作流程清晰</b>：第2題（印表機為輸出）、第4題（儲存資料為記憶單元）、第5題（CPU=CU+ALU）、第11題（船長比喻控制單元）全對。<br>
+                • <b>情境題適應力好</b>：能透過生活或電影故事理解控制單元與算術運算，具備良好的資處專業思維底子。
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-rose-50/70 border border-rose-200 space-y-2">
+              <div class="flex items-center gap-2 text-rose-700 font-bold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>急需補強痛點 (Critical Weaknesses)</span>
+              </div>
+              <p class="text-slate-700 leading-relaxed">
+                • <b>微觀硬體規格實體經驗不足</b>：對於主機板上的插槽（PCI-E vs RAM插槽）缺乏具體形貌認知，容易憑字面印象硬猜。<br>
+                • <b>名詞定義死背而缺乏語意理解</b>：如 MIPS、SRAM 與熱插拔，容易受限於「只能…」等語言陷阱。
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Tutor Recommendation Strategy -->
+          <div class="p-4 rounded-xl bg-indigo-50/60 border border-indigo-100 space-y-2 text-xs">
+            <h4 class="font-bold text-indigo-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-lightbulb text-amber-500"></i>
+              <span>專屬家教輔導對策（四技二專統測商管群導向之實戰解題法）</span>
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-slate-700">
+              <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-2xs">
+                <b class="text-indigo-800 block mb-1">1. 統測關鍵字破題法</b>
+                <span>熱插拔鎖定「免關機」，而非「限開機」，破除考題排他性語意陷阱。</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-2xs">
+                <b class="text-indigo-800 block mb-1">2. 專業名詞英文字根拆解</b>
+                <span>MIPS 拆為 Millions of <b>Instructions</b>，強調 CPU 執行的「指令碼」，取代直覺猜想的 Information。</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-2xs">
+                <b class="text-indigo-800 block mb-1">3. 主機板插槽規格表</b>
+                <span>記憶體找 DIMM/SO-DIMM、顯卡找 PCI-E、固態硬碟找 M.2，建立扎實的硬體配置直覺。</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action bar -->
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-500 font-medium">
+              建議下一步：先完成錯題訂正，再進入「弱點自適應測驗」進行閉環驗證。
+            </span>
+            <button onclick="switchTab('review')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs rounded-xl shadow transition">
+              進入試卷錯題逐題檢視 <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: 隨堂試卷錯題本 (Error Review) ==================== -->
+    <section id="tab-review" class="tab-content hidden space-y-6">
+      
+      <!-- Filter and Header Section -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-book-bookmark text-indigo-600"></i>
+            <span>隨堂測驗卷（第 3 回）題目逐題深度解析</span>
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            完整收錄第 1~13 題，如實還原芊瑜作答答案與老師紅筆眉批，附帶家教名師解析與避坑技巧。
+          </p>
+        </div>
+
+        <!-- Filter Pill Buttons -->
+        <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+          <button onclick="filterQuestions('all')" id="filter-all" class="filter-btn active px-3 py-1.5 rounded-lg bg-white text-indigo-700 shadow-xs">
+            全部 (13 題)
+          </button>
+          <button onclick="filterQuestions('wrong')" id="filter-wrong" class="filter-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
+            ⚠️ 僅看錯題 (4 題)
+          </button>
+          <button onclick="filterQuestions('correct')" id="filter-correct" class="filter-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
+            ✅ 僅看答對 (9 題)
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Cards Container (Generated Dynamically via JS) -->
+      <div id="questionListContainer" class="space-y-4">
+        <!-- Rendered by app.js -->
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 3: 1對1 AI 家教引導室 (AI Tutor Chat) ==================== -->
+    <section id="tab-aitutor" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[750px]">
+        
+        <!-- Chat Header -->
+        <div class="p-4 bg-gradient-to-r from-indigo-700 to-indigo-900 text-white flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-indigo-500 border-2 border-indigo-300 flex items-center justify-center font-bold text-lg shadow-sm">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-sm">小智老師 (AI 數位科技家教)</h3>
+                <span class="px-2 py-0.5 text-[10px] bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 rounded-full">在線輔導中</span>
+              </div>
+              <p class="text-xs text-indigo-200">採用蘇格拉底式引導教學 • 專屬針對資料處理科黃芊瑜同學備課</p>
+            </div>
+          </div>
+
+          <button onclick="resetChat()" class="text-xs px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-indigo-100 transition flex items-center gap-1">
+            <i class="fa-solid fa-rotate-right"></i> 重啟對話
+          </button>
+        </div>
+
+        <!-- Chat Conversation Area -->
+        <div id="chatMessages" class="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50">
+          <!-- Messages will be injected here -->
+        </div>
+
+        <!-- Prompt Suggestions Pills -->
+        <div class="px-4 py-2 bg-slate-100/80 border-t border-slate-200 overflow-x-auto flex space-x-2 text-xs">
+          <span class="text-slate-400 self-center whitespace-nowrap font-medium text-[11px]">快捷問題：</span>
+          <button onclick="sendQuickPrompt('熱插拔為什麼開關機都能拔？(Q7)')" class="px-3 py-1 bg-white hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-full whitespace-nowrap transition text-slate-700 shadow-2xs">
+            🔥 熱插拔為什麼開關機都能拔？(Q7)
+          </button>
+          <button onclick="sendQuickPrompt('阿布裝 RAM 為什麼不能插在 PCI-E？(Q8)')" class="px-3 py-1 bg-white hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-full whitespace-nowrap transition text-slate-700 shadow-2xs">
+            💾 阿布裝 RAM 為什麼不能插在 PCI-E？(Q8)
+          </button>
+          <button onclick="sendQuickPrompt('MIPS 的 I 到底是什麼意思？(Q10)')" class="px-3 py-1 bg-white hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-full whitespace-nowrap transition text-slate-700 shadow-2xs">
+            ⏱️ MIPS 的 I 到底是什麼意思？(Q10)
+          </button>
+          <button onclick="sendQuickPrompt('SRAM 和 DRAM 的差別怎麼記？(Q1)')" class="px-3 py-1 bg-white hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-full whitespace-nowrap transition text-slate-700 shadow-2xs">
+            ⚡ SRAM vs DRAM 世紀對決怎麼記？(Q1)
+          </button>
+          <button onclick="sendQuickPrompt('身為資處科同學，數位科技概論在統測有什麼戰略意義？')" class="px-3 py-1 bg-white hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-full whitespace-nowrap transition text-slate-700 shadow-2xs">
+            🎯 資處科在四技二專統測的準備重點？
+          </button>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="p-4 bg-white border-t border-slate-200">
+          <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+            <input type="text" id="chatInput" placeholder="請輸入想向家教詢問的問題（如：五大單元怎麼分？暫存器是什麼？）..." class="flex-1 px-4 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
+            <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition shadow-sm shadow-indigo-200 flex items-center gap-2">
+              <span>發送</span>
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 4: 弱點自適應補強測驗 (Adaptive Quiz) ==================== -->
+    <section id="tab-practice" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-feather text-indigo-600"></i>
+              <span>弱點強化自適應測驗（精準補強 5 題）</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">
+              系統根據黃芊瑜本次在隨堂考失分的 4 大概念（SRAM、熱插拔、RAM插槽、MIPS）自動生成新題，驗證概念是否已完全吸收！
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-slate-500">每題 20 分 • 滿分 100 分</span>
+            <div id="quizScoreBadge" class="hidden px-3 py-1 rounded-lg font-bold text-sm"></div>
+          </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <form id="practiceQuizForm" onsubmit="submitQuiz(event)" class="space-y-6">
+          <div id="quizQuestionsContainer" class="space-y-5">
+            <!-- Questions rendered via JS -->
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <button type="button" onclick="resetQuiz()" class="px-4 py-2.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
+              重設題目
+            </button>
+            <button type="submit" id="submitQuizBtn" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-md shadow-indigo-200 transition flex items-center gap-2">
+              <i class="fa-solid fa-check"></i>
+              <span>送出作答並即時批改</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 5: 家教日誌與處方簽 (Tutor Report) ==================== -->
+    <section id="tab-report" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-sm space-y-6 card-print" id="printableReport">
+        
+        <!-- Header of Report -->
+        <div class="border-b-2 border-slate-800 pb-4 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-xs font-black bg-indigo-600 text-white rounded">EduTutor 官方認證</span>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">家教課堂輔導日誌與學習處方箋</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">針對隨堂測驗卷（第3回）之課後輔導成果與家長進度回報單</p>
+          </div>
+          <div class="text-right text-xs text-slate-600 font-mono">
+            <div>輔導日期：2026-11-12</div>
+            <div>學生：資料處理科 1年仁班 黃芊瑜 (#07)</div>
+            <div>指導家教：小智老師 (AI 認證講師)</div>
+          </div>
+        </div>
+
+        <!-- Section 1: 測驗成績與診斷對比 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-slate-400 font-medium">前測分數 (隨堂卷)</span>
+            <div class="text-3xl font-black text-slate-800 mt-1">68 <span class="text-sm font-normal text-slate-500">分</span></div>
+            <p class="text-[11px] text-rose-500 mt-1">失分 32 分（全卷錯 8 題）</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-slate-400 font-medium">輔導重點單元</span>
+            <div class="text-base font-bold text-indigo-700 mt-1">第3章 系統平台的組成架構－硬體</div>
+            <p class="text-[11px] text-slate-500 mt-1">CPU、記憶體階層、插槽規格、I/O介面</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-slate-400 font-medium">學習掌握預估提升</span>
+            <div class="text-3xl font-black text-emerald-600 mt-1">92+ <span class="text-sm font-normal text-slate-500">分 (統測目標)</span></div>
+            <p class="text-[11px] text-emerald-600 mt-1">已釐清 4 大關鍵失分死角</p>
+          </div>
+        </div>
+
+        <!-- Section 2: 錯題釐清紀要 -->
+        <div class="space-y-3">
+          <h3 class="font-bold text-slate-900 text-sm border-l-4 border-indigo-600 pl-2.5">
+            本日課堂 4 大核心盲點攻堅紀要
+          </h3>
+          <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-3 w-16">題號</th>
+                  <th class="p-3 w-32">考查知識點</th>
+                  <th class="p-3 w-28">原答 / 正解</th>
+                  <th class="p-3">學生原有迷思剖析</th>
+                  <th class="p-3">家教突破處方（口訣/譬喻）</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-3 font-bold text-rose-600">第 1 題</td>
+                  <td class="p-3 font-medium">SRAM vs DRAM</td>
+                  <td class="p-3 font-mono"><span class="text-rose-500 line-through">A(?)</span> / <b class="text-emerald-600">A</b></td>
+                  <td class="p-3 text-slate-600">對電路正反器與電容充電刷新 (Refresh) 的概念容易混淆。</td>
+                  <td class="p-3 text-indigo-700 font-medium">口訣：「SRAM 快又免充電，昂貴做快取；DRAM 便宜容量大，需要定時充」。</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-rose-600">第 7 題</td>
+                  <td class="p-3 font-medium">熱插拔技術</td>
+                  <td class="p-3 font-mono"><span class="text-rose-500 line-through">A</span> / <b class="text-emerald-600">C</b></td>
+                  <td class="p-3 text-slate-600">誤將「開機時免關機即可拔」推論成「只能在開機時插拔」。</td>
+                  <td class="p-3 text-indigo-700 font-medium">譬喻：就像換點滴瓶，開機（病人醒著）或關機（病人休息）都能換！</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-rose-600">第 8 題</td>
+                  <td class="p-3 font-medium">RAM 擴充插槽</td>
+                  <td class="p-3 font-mono"><span class="text-rose-500 line-through">B</span> / <b class="text-emerald-600">A</b></td>
+                  <td class="p-3 text-slate-600">對主機板各部件位置生疏，誤把顯示卡 PCI-E 插槽當作 RAM 插槽。</td>
+                  <td class="p-3 text-indigo-700 font-medium">口訣：「記憶體找記憶體插槽 (DIMM)，顯卡找 PCI-E，高速硬碟找 M.2」。</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-rose-600">第 10 題</td>
+                  <td class="p-3 font-medium">CPU 指標 MIPS</td>
+                  <td class="p-3 font-mono"><span class="text-rose-500 line-through">A</span> / <b class="text-emerald-600">B</b></td>
+                  <td class="p-3 text-slate-600">看到字母 I 便憑直覺猜測 Information（資訊）。</td>
+                  <td class="p-3 text-indigo-700 font-medium">處方：MIPS 代表每秒執行百萬「指令（Instruction）」，如醫囑處方！</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 3: 給家長的話 (Letter to Parents) -->
+        <div class="p-5 rounded-xl bg-indigo-50/60 border border-indigo-200 text-xs space-y-2">
+          <h4 class="font-bold text-indigo-900 text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-envelope-open-text text-indigo-600"></i>
+            <span>給家長的一封信（教學成果回饋與叮嚀）</span>
+          </h4>
+          <p class="text-slate-700 leading-relaxed text-[13px]" id="parentLetterContent">
+            芊瑜家長您好！本次隨堂考雖然拿到 68 分，但經過我們深入拆解試卷發現，芊瑜在「電腦架構的整體運作邏輯」表現相當突出，包含控制單元、輸出單元、ALU 邏輯比對等題目皆全數答對，展現資處科學生優異的邏輯理解力！<br><br>
+            這次扣分的 32 分，主要是剛接觸微觀硬體名詞（如插槽英文代號、CPU 測量指標）時，因不熟悉而憑直覺猜測，以及對「熱插拔」字面產生排他性語意死角。在今天 1 對 1 家教輔導中，我們針對四技二專統測商管群高頻題型（DIMM 插槽、指令 Instruction、SRAM 快取）為她建立了系統化的統測秒殺破題對照表，她已完全理解錯誤原因，並在自適應補強測驗中獲得顯著突破！請家長多給予芊瑜肯定與鼓勵！
+          </p>
+        </div>
+
+        <!-- Section 4: 課後作業與下次預習 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5">
+            <span class="font-bold text-slate-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check text-indigo-600"></i> 課後指定作業 (Homework)
+            </span>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+              <li>複習「SRAM vs DRAM」五大特點對照表格。</li>
+              <li>在電腦上觀察「工作管理員」中的 CPU 時脈、核心數與可用 RAM。</li>
+              <li>完成自適應弱點測驗 5 題複習。</li>
+            </ul>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5">
+            <span class="font-bold text-slate-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-forward text-emerald-600"></i> 下次輔導預告 (Next Plan)
+            </span>
+            <p class="text-slate-600 leading-relaxed">
+              預計進入<b>《第 4 章：系統平台的組成架構－軟體與作業系統》</b>，將著重於 Windows / Linux / macOS 核心機制、驅動程式以及資處科專業科目之系統軟硬體協同運作。
+            </p>
+          </div>
+        </div>
+
+        <!-- Print & Copy Bar -->
+        <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
+          <button onclick="copyParentLetter()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition flex items-center gap-2">
+            <i class="fa-solid fa-copy"></i>
+            <span id="copyBtnText">複製「給家長的一封信」至剪貼簿 (傳 LINE)</span>
+          </button>
+          <div class="flex gap-2">
+            <button onclick="window.print()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow transition flex items-center gap-2">
+              <i class="fa-solid fa-print"></i>
+              <span>列印正式家教處方簽 (PDF)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 6: 考卷管理與擴充 (Exam Manager) ==================== -->
+    <section id="tab-manager" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-indigo-600"></i>
+              <span>考卷題庫與學生資料管理</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">
+              支援家教老師手動新增題目、登錄試卷第 2 面（Q14~Q25）或切換學生進行多維度追蹤。
+            </p>
+          </div>
+          <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full font-bold text-xs">
+            目前已收錄 1 份試卷 • 13 道分析題
+          </span>
+        </div>
+
+        <!-- Add New Question Form -->
+        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+          <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-emerald-600"></i>
+            <span>錄入新題目（例如：第 2 面錯題登記）</span>
+          </h3>
+
+          <form onsubmit="handleAddNewQuestion(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="md:col-span-1">
+                <label class="block font-semibold text-slate-700 mb-1">題號 (ID)</label>
+                <input type="number" id="newQId" value="14" class="w-full p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block font-semibold text-slate-700 mb-1">知識點分類</label>
+                <select id="newQCategory" class="w-full p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                  <option value="電腦五大架構">電腦五大架構</option>
+                  <option value="CPU與運算指標">CPU與運算指標</option>
+                  <option value="記憶體儲存階層">記憶體儲存階層</option>
+                  <option value="周邊介面與熱插拔">周邊介面與熱插拔</option>
+                  <option value="硬體組裝與擴充">硬體組裝與擴充</option>
+                </select>
+              </div>
+              <div class="md:col-span-1">
+                <label class="block font-semibold text-slate-700 mb-1">學生是否答對？</label>
+                <select id="newQIsWrong" class="w-full p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                  <option value="true">❌ 答錯 (需補強)</option>
+                  <option value="false">✅ 答對</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">題目文字敘述</label>
+              <textarea id="newQText" rows="2" placeholder="請輸入題目內容..." class="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">(A) 選項</label>
+                <input type="text" id="newOptA" placeholder="選項 A" class="w-full p-2 bg-white border border-slate-300 rounded-lg" required>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">(B) 選項</label>
+                <input type="text" id="newOptB" placeholder="選項 B" class="w-full p-2 bg-white border border-slate-300 rounded-lg" required>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">(C) 選項</label>
+                <input type="text" id="newOptC" placeholder="選項 C" class="w-full p-2 bg-white border border-slate-300 rounded-lg" required>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">(D) 選項</label>
+                <input type="text" id="newOptD" placeholder="選項 D" class="w-full p-2 bg-white border border-slate-300 rounded-lg" required>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">正確答案</label>
+                <select id="newQCorrect" class="w-full p-2 bg-white border border-slate-300 rounded-lg">
+                  <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">學生作答</label>
+                <select id="newQStudent" class="w-full p-2 bg-white border border-slate-300 rounded-lg">
+                  <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">老師紅筆備註</label>
+                <input type="text" id="newQTeacherNote" placeholder="例如：未掌握指令週期..." class="w-full p-2 bg-white border border-slate-300 rounded-lg">
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">家教深度解析與盲點</label>
+              <textarea id="newQAnalysis" rows="2" placeholder="請輸入詳細解析與口訣..." class="w-full p-2.5 bg-white border border-slate-300 rounded-lg" required></textarea>
+            </div>
+
+            <div class="text-right">
+              <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition shadow-sm">
+                <i class="fa-solid fa-plus mr-1"></i> 新增至錯題本
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div>EduTutor AI 智慧家教與學習診斷系統 • 旗立數位科技概論考卷專案</div>
+      <div class="text-slate-500 font-mono">學生檔案：資料處理科 1年仁班 黃芊瑜 (#07)</div>
+    </div>
+  </footer>
+
+  <!-- Include Application Scripts -->
+  <script src="app.js"></script>
+  <script>
+    // Tab switching logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'text-indigo-600', 'bg-indigo-50', 'border', 'border-indigo-100');
+        btn.classList.add('text-slate-600');
+      });
+
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'text-indigo-600', 'bg-indigo-50', 'border', 'border-indigo-100');
+        activeBtn.classList.remove('text-slate-600');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Question Review Filter
+    let currentFilter = 'all';
+    function filterQuestions(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-white', 'text-indigo-700', 'shadow-xs');
+        btn.classList.add('text-slate-600');
+      });
+      const activeFilterBtn = document.getElementById('filter-' + type);
+      if (activeFilterBtn) {
+        activeFilterBtn.classList.add('active', 'bg-white', 'text-indigo-700', 'shadow-xs');
+        activeFilterBtn.classList.remove('text-slate-600');
+      }
+      renderQuestionList();
+    }
+
+    // Render Question List
+    function renderQuestionList() {
+      const container = document.getElementById('questionListContainer');
+      let filtered = examQuestions;
+      if (currentFilter === 'wrong') {
+        filtered = examQuestions.filter(q => q.isWrong);
+      } else if (currentFilter === 'correct') {
+        filtered = examQuestions.filter(q => !q.isWrong);
+      }
+
+      container.innerHTML = filtered.map(q => {
+        const isWrong = q.isWrong;
+        return `
+          <div class="bg-white rounded-2xl p-5 border ${isWrong ? 'border-rose-200 shadow-sm' : 'border-slate-200'} space-y-4 card-hover">
+            <!-- Question Header -->
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg ${isWrong ? 'bg-rose-100 text-rose-700 font-black' : 'bg-emerald-100 text-emerald-700 font-bold'} flex items-center justify-center text-sm font-mono">
+                  ${q.id}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${isWrong ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
+                  ${isWrong ? '❌ 學生答錯 (失分 -4)' : '✅ 學生答對 (+4)'}
+                </span>
+                <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600">
+                  ${q.category}
+                </span>
+              </div>
+              <div class="flex items-center gap-3 text-xs font-mono">
+                <span>學生作答：<b class="${isWrong ? 'text-rose-600 font-bold' : 'text-slate-800'}">(${q.studentAns})</b></span>
+                <span>標準答案：<b class="text-emerald-700 font-bold">(${q.correctAns})</b></span>
+              </div>
+            </div>
+
+            <!-- Question Body -->
+            <div class="text-sm font-semibold text-slate-900 leading-relaxed">
+              ${q.question}
+            </div>
+
+            <!-- Options Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              ${Object.entries(q.options).map(([optKey, optVal]) => {
+                let badgeClass = 'bg-slate-50 border-slate-200 text-slate-700';
+                if (optKey === q.correctAns) {
+                  badgeClass = 'bg-emerald-50 border-emerald-300 text-emerald-900 font-semibold ring-1 ring-emerald-400';
+                }
+                if (isWrong && optKey === q.studentAns) {
+                  badgeClass = 'bg-rose-50 border-rose-300 text-rose-800 line-through';
+                }
+                return `
+                  <div class="p-2.5 rounded-xl border ${badgeClass} flex items-start gap-2">
+                    <span class="font-bold font-mono">(${optKey})</span>
+                    <span>${optVal}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Teacher Note and Deep Analysis -->
+            <div class="p-3.5 rounded-xl ${isWrong ? 'bg-rose-50/60 border border-rose-100' : 'bg-slate-50 border border-slate-200'} space-y-2 text-xs">
+              ${q.teacherNote ? `
+                <div class="text-rose-700 font-semibold flex items-center gap-1.5">
+                  <i class="fa-solid fa-pen-nib"></i>
+                  <span>考卷紅字標記：${q.teacherNote}</span>
+                </div>
+              ` : ''}
+              <div class="text-slate-700 leading-relaxed">
+                <b>【名師精解】</b>：${q.analysis}
+              </div>
+              ${q.tutorTip ? `
+                <div class="text-indigo-800 font-medium bg-white/80 p-2.5 rounded-lg border border-indigo-100">
+                  ${q.tutorTip}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Action footer -->
+            <div class="flex justify-end pt-1">
+              <button onclick="askAITutorAboutQuestion(${q.id})" class="px-3.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-robot"></i>
+                <span>問 AI 家教這題的引導思路</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Adaptive Practice Quiz
+    function renderQuiz() {
+      const container = document.getElementById('quizQuestionsContainer');
+      container.innerHTML = adaptivePracticeQuiz.map((q, idx) => {
+        return `
+          <div class="p-5 rounded-2xl border border-slate-200 bg-white space-y-3" id="quiz-card-${q.id}">
+            <div class="flex items-center justify-between text-xs font-semibold">
+              <span class="text-indigo-600">強化題 0${idx + 1}</span>
+              <span id="quiz-status-${q.id}" class="text-slate-400 font-medium">尚未作答</span>
+            </div>
+            <div class="font-bold text-sm text-slate-800">
+              ${q.question}
+            </div>
+            <div class="space-y-2 text-xs">
+              ${Object.entries(q.options).map(([optKey, optVal]) => {
+                return `
+                  <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition" id="label-${q.id}-${optKey}">
+                    <input type="radio" name="${q.id}" value="${optKey}" class="text-indigo-600 focus:ring-indigo-500" required>
+                    <span class="font-mono font-bold">(${optKey})</span>
+                    <span class="text-slate-700">${optVal}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+            <div id="quiz-expl-${q.id}" class="hidden p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+              <div class="font-bold text-slate-800">【詳解與觀念】</div>
+              <div class="text-slate-600 leading-relaxed">${q.explanation}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Submit Quiz
+    function submitQuiz(e) {
+      e.preventDefault();
+      let correctCount = 0;
+      adaptivePracticeQuiz.forEach(q => {
+        const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+        const statusEl = document.getElementById(`quiz-status-${q.id}`);
+        const explEl = document.getElementById(`quiz-expl-${q.id}`);
+        explEl.classList.remove('hidden');
+
+        if (selected && selected.value === q.answer) {
+          correctCount++;
+          statusEl.innerHTML = '<span class="text-emerald-600 font-bold">✅ 答對 (+20分)</span>';
+          document.getElementById(`label-${q.id}-${q.answer}`).classList.add('bg-emerald-50', 'border-emerald-400');
+        } else {
+          statusEl.innerHTML = `<span class="text-rose-600 font-bold">❌ 答錯 (正解是 ${q.answer})</span>`;
+          if (selected) {
+            document.getElementById(`label-${q.id}-${selected.value}`).classList.add('bg-rose-50', 'border-rose-400', 'line-through');
+          }
+          document.getElementById(`label-${q.id}-${q.answer}`).classList.add('bg-emerald-50', 'border-emerald-400', 'font-bold');
+        }
+      });
+
+      const totalScore = correctCount * 20;
+      const scoreBadge = document.getElementById('quizScoreBadge');
+      scoreBadge.classList.remove('hidden');
+      if (totalScore >= 80) {
+        scoreBadge.className = 'px-3 py-1 rounded-lg font-bold text-sm bg-emerald-100 text-emerald-800';
+        scoreBadge.innerHTML = `🎉 恭喜！本次強化測驗得分：${totalScore} 分 (弱點修復成功！)`;
+      } else {
+        scoreBadge.className = 'px-3 py-1 rounded-lg font-bold text-sm bg-amber-100 text-amber-800';
+        scoreBadge.innerHTML = `📝 本次強化測驗得分：${totalScore} 分 (建議再看一次詳解與 AI 家教對話)`;
+      }
+      scoreBadge.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+      document.getElementById('practiceQuizForm').reset();
+      document.getElementById('quizScoreBadge').classList.add('hidden');
+      adaptivePracticeQuiz.forEach(q => {
+        document.getElementById(`quiz-status-${q.id}`).innerHTML = '尚未作答';
+        document.getElementById(`quiz-expl-${q.id}`).classList.add('hidden');
+        ['A', 'B', 'C', 'D'].forEach(opt => {
+          const lbl = document.getElementById(`label-${q.id}-${opt}`);
+          if (lbl) {
+            lbl.className = 'flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition';
+          }
+        });
+      });
+    }
+
+    // AI Tutor Chat System
+    function initChat() {
+      const chatBox = document.getElementById('chatMessages');
+      chatBox.innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+            智
+          </div>
+          <div class="chat-bubble-ai p-4 max-w-xl text-xs space-y-2 text-slate-800 shadow-2xs">
+            ${aiTutorDialogue.getInitialGreeting()}
+          </div>
+        </div>
+      `;
+    }
+
+    function resetChat() {
+      initChat();
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const val = input.value.trim();
+      if (!val) return;
+      sendMessage(val);
+      input.value = '';
+    }
+
+    function sendQuickPrompt(text) {
+      switchTab('aitutor');
+      sendMessage(text);
+    }
+
+    function askAITutorAboutQuestion(qid) {
+      switchTab('aitutor');
+      const q = examQuestions.find(item => item.id === qid);
+      if (q) {
+        sendMessage(`老師好，我想請教第 ${q.id} 題（${q.question.substring(0, 22)}...），我該怎麼理解？`);
+      }
+    }
+
+    function sendMessage(text) {
+      const chatBox = document.getElementById('chatMessages');
+
+      // Append User Message
+      chatBox.innerHTML += `
+        <div class="flex items-start justify-end gap-3">
+          <div class="chat-bubble-user p-3.5 max-w-lg text-xs leading-relaxed shadow-xs">
+            ${text}
+          </div>
+          <div class="w-8 h-8 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center font-bold text-xs shrink-0">
+            芊
+          </div>
+        </div>
+      `;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Simulate AI typing delay
+      setTimeout(() => {
+        const response = aiTutorDialogue.answerQuestion(text);
+        chatBox.innerHTML += `
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+              智
+            </div>
+            <div class="chat-bubble-ai p-4 max-w-xl text-xs space-y-2 text-slate-800 shadow-2xs">
+              ${response}
+            </div>
+          </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 350);
+    }
+
+    // Copy Parent Letter
+    function copyParentLetter() {
+      const text = document.getElementById('parentLetterContent').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtnText');
+        const orig = btn.innerText;
+        btn.innerText = '✅ 已成功複製至剪貼簿！';
+        setTimeout(() => { btn.innerText = orig; }, 2500);
+      });
+    }
+
+    // Add New Question handler
+    function handleAddNewQuestion(e) {
+      e.preventDefault();
+      const newId = parseInt(document.getElementById('newQId').value);
+      const category = document.getElementById('newQCategory').value;
+      const isWrong = document.getElementById('newQIsWrong').value === 'true';
+      const question = document.getElementById('newQText').value;
+      const optA = document.getElementById('newOptA').value;
+      const optB = document.getElementById('newOptB').value;
+      const optC = document.getElementById('newOptC').value;
+      const optD = document.getElementById('newOptD').value;
+      const correctAns = document.getElementById('newQCorrect').value;
+      const studentAns = document.getElementById('newQStudent').value;
+      const teacherNote = document.getElementById('newQTeacherNote').value;
+      const analysis = document.getElementById('newQAnalysis').value;
+
+      const newQ = {
+        id: newId,
+        question: question,
+        options: { A: optA, B: optB, C: optC, D: optD },
+        studentAns: studentAns,
+        correctAns: correctAns,
+        isWrong: isWrong,
+        teacherNote: teacherNote,
+        category: category,
+        analysis: analysis,
+        tutorTip: "💡 【新增自訂題觀念】：請牢記核心定義與題目關鍵字。"
+      };
+
+      examQuestions.push(newQ);
+      alert(`已成功將第 ${newId} 題新增至錯題本題庫！`);
+      renderQuestionList();
+      switchTab('review');
+    }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderQuestionList();
+      renderQuiz();
+      initChat();
+    });
+  </script>
+</body>
+</html>
+
